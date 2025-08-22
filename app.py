@@ -255,9 +255,9 @@ st.markdown("""
 @st.cache_resource
 def load_model_and_scaler():
     try:
-        with open('n_svm_model.pkl', 'rb') as f:
+        with open('svm_model.pkl', 'rb') as f:
             model = pickle.load(f)
-        with open('n_scaler_.pkl', 'rb') as f:
+        with open('scaler.pkl', 'rb') as f:
             scaler = pickle.load(f)    
         # model = joblib.load("n_svm_model.pkl")
         # scaler = joblib.load("n_scaler.pkl")
