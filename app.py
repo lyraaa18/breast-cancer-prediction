@@ -55,11 +55,11 @@ st.markdown("""
     /* Feature input cards */
     .feature-card {
         background: #fff;
-        padding: 1.8rem;
+        padding: 1rem;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         border: 1px solid #e5e7eb;
-        margin-bottom: 1rem;
+        margin-bottom: .5rem;
         transition: all 0.3s ease;
     }
     
@@ -319,40 +319,49 @@ with st.sidebar:
 
 # Add sample data for testing
 st.markdown("### 🧪 Try Sample Data")
-col1, col2, col3 = st.columns(3)
+col1 = st.columns(1)[0]
 
 with col1:
-    if st.button("Sample Benign", use_container_width=True, type='primary'):
-        st.session_state.radius_slider = random.uniform(7.0, 18.0)
-        st.session_state.concave_slider = random.uniform(0.0, 0.09)
-        st.rerun()
-
-with col2:
-    if st.button("Sample Malignant", use_container_width=True, type='primary'):
-        st.session_state.radius_slider = random.uniform(18.0, 29.0)  
-        st.session_state.concave_slider = random.uniform(0.1, 0.2)  
-        st.rerun()
-
-with col3:
     if st.button("Reset Values", use_container_width=True, type='primary'):
         st.session_state.radius_slider = 15.0
         st.session_state.concave_slider = 0.1
         st.rerun()
 
+# +++++++++++++ BUTTON BACKUP +++++++++++++
+# col1, col2, col3 = st.columns(3)
+
+# with col1:
+#     if st.button("Sample Benign", use_container_width=True, type='primary'):
+#         st.session_state.radius_slider = random.uniform(7.0, 18.0)
+#         st.session_state.concave_slider = random.uniform(0.0, 0.09)
+#         st.rerun()
+
+# with col2:
+#     if st.button("Sample Malignant", use_container_width=True, type='primary'):
+#         st.session_state.radius_slider = random.uniform(18.0, 29.0)  
+#         st.session_state.concave_slider = random.uniform(0.1, 0.2)  
+#         st.rerun()
+
+# with col3:
+#     if st.button("Reset Values", use_container_width=True, type='primary'):
+#         st.session_state.radius_slider = 15.0
+#         st.session_state.concave_slider = 0.1
+#         st.rerun()
+# +++++++++++++++++++++++++++++++++++++
 # Create two columns for better layout
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
     <div class="feature-card">
         <div class="feature-title">📏 Radius (Worst)</div>
-        <p style="color: #636e72; margin-bottom: 1rem;">Mean distance from center to perimeter points</p>
+        <p style="color: #636e72; font-size: .9rem;">Mean distance from center to perimeter points</p>
     """, unsafe_allow_html=True)
     radius_worst = st.number_input(
         "Value", 
-        min_value=7.00000000000001, 
-        max_value=30.00000000000001, 
-        value=15.000,  # Default value
+        min_value=5.0, 
+        max_value=40.0, 
+        value=5.0,  # Default value
         step=0.01,
         key="radius_slider",
         help="Mean distance from center to perimeter points (worst case)"
@@ -363,22 +372,39 @@ with col1:
 with col2:
     st.markdown("""
     <div class="feature-card">
-        <div class="feature-title">🔍 Concave Points (Worst)</div>
-        <p style="color: #636e72; margin-bottom: 1rem;">Number of concave portions of the contour</p>
+        <div class="feature-title">🔍 Smoothness (Worst)</div>
+        <p style="color: #636e72; margin-bottom: 1rem;">Variation of cell radius</p>
     """, unsafe_allow_html=True)
-    concave_points_worst = st.number_input(
+    smoothness_worst = st.number_input(
         "Value", 
-        min_value=0.0000, 
-        max_value=0.200000, 
-        value=0.10000, 
+        min_value= 0.05, 
+        max_value=0.5, 
+        value=0.05, 
         step=0.01,
-        key="concave_slider",
-        help="Number of concave portions of the contour (worst case)"
+        key="smoothness_slider",
+        help="Variation of cell radius (worst case)"
+    )
+    st.markdown("</div>", unsafe_allow_html=True )
+
+with col3:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="feature-title">🔍 Texture (Mean)</div>
+        <p style="color: #636e72; margin-bottom: 1rem;">Grayscale variation in cell</p>
+    """, unsafe_allow_html=True)
+    texture_mean = st.number_input(
+        "Value", 
+        min_value=5.0, 
+        max_value=45.0,
+        value=5.0, 
+        step=0.01,
+        key="texture_slider",
+        help="Grayscale variation in cell (mean value)"
     )
     st.markdown("</div>", unsafe_allow_html=True )
 
 # Visualization section
-col_viz1, col_viz2 = st.columns(2)
+col_viz1, col_viz2, col_viz3 = st.columns(3)
 
 with col_viz1:
     # Radius gauge chart
@@ -400,15 +426,15 @@ with col_viz1:
                 'thickness': 0.75, 'value': 25}}))
     
     fig_radius.update_layout(height=300, margin=dict(t=50, b=0, l=50, r=50))
-    st.plotly_chart(fig_radius, use_container_width=True)
+    st.plotly_chart(fig_radius, use_container_width=True,key="radius_worst_chart")
 
 with col_viz2:
     # Concave points gauge chart
-    fig_concave = go.Figure(go.Indicator(
+    fig_smoothness = go.Figure(go.Indicator(
         mode = "gauge+number+delta",
-        value = concave_points_worst,
+        value = smoothness_worst,
         domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': "Concave Points (Worst)"},
+        title = {'text': "Smoothness (Worst)"},
         delta = {'reference': 0.1},
         gauge = {
             'axis': {'range': [None, 0.5]},
@@ -421,8 +447,30 @@ with col_viz2:
                 'line': {'color': "red", 'width': 4},
                 'thickness': 0.75, 'value': 0.3}}))
     
-    fig_concave.update_layout(height=300, margin=dict(t=50, b=0, l=50, r=50))
-    st.plotly_chart(fig_concave, use_container_width=True)
+    fig_smoothness.update_layout(height=300, margin=dict(t=50, b=0, l=50, r=50))
+    st.plotly_chart(fig_smoothness, use_container_width=True,key="smoothness_worst_chart")
+
+with col_viz3:
+    # Concave points gauge chart
+    fig_texture = go.Figure(go.Indicator(
+        mode = "gauge+number+delta",
+        value = texture_mean,
+        domain = {'x': [0, 1], 'y': [0, 1]},
+        title = {'text': "Texture (Mean)"},
+        delta = {'reference': 0.1},
+        gauge = {
+            'axis': {'range': [None, 0.5]},
+            'bar': {'color': "#667eea"},
+            'steps': [
+                {'range': [0, 0.1], 'color': "#00b894"},
+                {'range': [0.1, 0.3], 'color': "#fdcb6e"},
+                {'range': [0.3, 0.5], 'color': "#e17055"}],
+            'threshold': {
+                'line': {'color': "red", 'width': 4},
+                'thickness': 0.75, 'value': 0.3}}))
+    
+    fig_texture.update_layout(height=300, margin=dict(t=50, b=0, l=50, r=50))
+    st.plotly_chart(fig_texture, use_container_width=True,key="texture_mean_chart")
 
 # # Prediction section
 # st.markdown("### 🎯 Prediction")
@@ -476,7 +524,7 @@ predict_col1, predict_col2, predict_col3 = st.columns([0.5, 3, 0.5])
 with predict_col2:
     if st.button("🔍 ANALYZE SAMPLE", type="primary", use_container_width=True):
         # Create input array
-        X = np.array([[radius_worst, concave_points_worst]])
+        X = np.array([[radius_worst, smoothness_worst, texture_mean]])
 
         try:
             # Apply scaling and make prediction
