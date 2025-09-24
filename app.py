@@ -322,14 +322,14 @@ st.markdown("### 🧪 Try Sample Data")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("Sample Benign", use_container_width=True, type='primary'):
-        st.session_state.radius_slider = random.uniform(7.0, 18.0)
-        st.session_state.concave_slider = random.uniform(0.0, 0.09)
+    if st.button("Sample Benign", use_container_width=True, type='primary'): #18.11, 0.08 || 18.00, 0.09
+        st.session_state.radius_slider = random.uniform(7.0, 17.00)
+        st.session_state.concave_slider = random.uniform(0.0, 0.09) 
         st.rerun()
 
 with col2:
     if st.button("Sample Malignant", use_container_width=True, type='primary'):
-        st.session_state.radius_slider = random.uniform(18.0, 29.0)  
+        st.session_state.radius_slider = random.uniform(18.01, 28.0) 
         st.session_state.concave_slider = random.uniform(0.1, 0.2)  
         st.rerun()
 
@@ -352,7 +352,7 @@ with col1:
         "Value", 
         min_value=7.00000000000001, 
         max_value=30.00000000000001, 
-        value=15.000,  # Default value
+        value=15.000,
         step=0.01,
         key="radius_slider",
         help="Mean distance from center to perimeter points (worst case)"
@@ -368,7 +368,7 @@ with col2:
     """, unsafe_allow_html=True)
     concave_points_worst = st.number_input(
         "Value", 
-        min_value=0.0000, 
+        min_value=0.0000001, 
         max_value=0.200000, 
         value=0.10000, 
         step=0.01,
@@ -566,7 +566,7 @@ with info_col1:
         <h4 style="color: #667eea; margin-top: 0;">📏 Radius (Worst)</h4>
         <ul style="color: #636e72;">
             <li><strong>Definition:</strong> Mean distance from center to perimeter</li>
-            <li><strong>Range:</strong> 7.0 - 38.0</li>
+            <li><strong>Range:</strong> 7.0 - 29.0</li>
             <li><strong>Impact:</strong> Larger values often indicate malignancy</li>
             <li><strong>Unit:</strong> Pixels in digitized image</li>
         </ul>
@@ -579,7 +579,7 @@ with info_col2:
         <h4 style="color: #667eea; margin-top: 0;">🔍 Concave Points (Worst)</h4>
         <ul style="color: #636e72;">
             <li><strong>Definition:</strong> Number of concave portions</li>
-            <li><strong>Range:</strong> 0.0 - 0.5</li>
+            <li><strong>Range:</strong> 0.0 - 0.2</li>
             <li><strong>Impact:</strong> Higher values suggest malignancy</li>
             <li><strong>Significance:</strong> Indicates cell shape irregularity</li>
         </ul>
